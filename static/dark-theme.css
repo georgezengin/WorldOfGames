@@ -1,0 +1,56 @@
+body {
+    background-color: #282c34;
+    color: #61dafb;
+}
+
+#greeting {
+    color: #ffffff; /* Adjust color as needed */
+}
+
+.container {
+    background-color: #20232a;
+    color: #21a1f1;
+}
+
+h2 {
+    color: #5c91d6;
+}
+
+h1 {
+    color: #2d6ab9;
+}
+
+
+button {
+    background-color: #61dafb;
+    color: #000;
+}
+
+button:hover {
+    background-color: #21a1f1;
+}
+
+a {
+    color: #61dafb;
+}
+
+a:hover {
+    color: #21a1f1;
+}
+
+select {
+    background-color: #333;
+    color: #61dafb;
+}
+
+.error {
+    color: #ff0015;
+    background-color: #000000;
+    border: 1px solid #5c5c5c;
+}
+
+.success {
+    color: #28a745; /* Green color */
+    background-color: #20232a; /* Dark background */
+    border: 1px solid #5c5c5c;
+}

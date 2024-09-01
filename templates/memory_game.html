@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Memory Game</title>
+    <script src="{{ url_for('static', filename='theme-control.js') }}" defer></script>
+    <link id="theme-style" rel="stylesheet" href="{{ url_for('static', filename='light-theme.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div id="user-name" data-name="{{ name }}" style="position: absolute; top: 10px; left: 10px;">Hello Guest!</div>
+    <!-- Theme switcher buttons -->
+    <div class="theme-switcher">
+        <button id="light-theme" aria-label="Switch to light theme">🌞 Light</button>
+        <button id="dark-theme" aria-label="Switch to dark theme">🌙 Dark</button>
+    </div>
+    <div class="container">
+        <h1>Memory Game</h1>
+        <!-- Add your game content here -->
+        
+        <!-- Form to go back to the game selection -->
+        <form action="{{ url_for('handle_game') }}" method="POST">
+            <input type="hidden" name="name" value="{{ name }}">
+            <button type="submit">Choose another game</button>
+        </form>
+    </div>
+</body>
+</html>

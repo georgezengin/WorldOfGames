@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>World of Games</title>
+    <script src="{{ url_for('static', filename='theme-control.js') }}" defer></script>
+    <link id="theme-style" rel="stylesheet" href="{{ url_for('static', filename='light-theme.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div id="user-name" data-name="{{ name }}" style="position: absolute; top: 10px; left: 10px;">Hello Guest!</div>
+    <!-- Theme switcher buttons -->
+    <div class="theme-switcher">
+        <button id="light-theme" aria-label="Switch to light theme">🌞 Light</button>
+        <button id="dark-theme" aria-label="Switch to dark theme">🌙 Dark</button>
+    </div>
+    <div class="container">
+        <h1>Welcome to the World of Games</h1>
+        <form action="{{ url_for('welcome_user') }}" method="POST">
+            <label for="name">What is your name?</label>
+            <input type="text" id="name" name="name" required class="short-input">
+            <button type="submit">Let's start!</button>
+        </form>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <ul class="flashes">
+                    {% for category, message in messages %}
+                        <li class="{{ category }}">{{ message }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        {% endwith %}
+    </div>
+</body>
+</html>
