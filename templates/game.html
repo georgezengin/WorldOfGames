@@ -2,17 +2,23 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Select a Game</title>
+    <title>WOG - Select a Game</title>
     <script src="{{ url_for('static', filename='theme-control.js') }}" defer></script>
     <link id="theme-style" rel="stylesheet" href="{{ url_for('static', filename='light-theme.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
 </head>
 <body>
     <div id="user-name" data-name="{{ name }}" style="position: absolute; top: 10px; left: 10px;">Hello Guest!</div>
     <!-- Theme switcher buttons -->
     <div class="theme-switcher">
-        <button id="light-theme" aria-label="Switch to light theme">🌞 Light</button>
-        <button id="dark-theme" aria-label="Switch to dark theme">🌙 Dark</button>
+        <!-- <button id="light-theme" aria-label="Switch to light theme">🌞 Light</button>
+        <button id="dark-theme" aria-label="Switch to dark theme">🌙 Dark</button> -->
+        <button id="theme-toggle"
+            data-light-theme="{{ url_for('static', filename='light-theme.css') }}" 
+            data-dark-theme="{{ url_for('static', filename='dark-theme.css') }}">
+            <span id="theme-icon">🌙</span> <!-- Initial icon set to the moon -->
+        </button>
     </div>
     <div class="container">
         <h1>{{ message }}</h1>
@@ -49,11 +55,18 @@
                 <form action="{{ url_for('submit_guess') }}" method="POST" style="display: inline;">
                     <button type="submit">Play!</button>
                 </form>
-                <form action="{{ url_for('index') }}" method="GET" style="display: inline;">
+                <form action="{{ url_for('index') }}" method="POST" style="display: inline;">
                     <button type="submit">Exit World of Games</button>
+                </form>
+                <form action="{{ url_for('top_scores') }}" method="POST" style="display: inline;">
+                    <button type="submit">Top Scores</button>
                 </form>
             </div>
         </form>
     </div>
 </body>
+<footer>
+    <!-- Add footer content if needed -->
+    <p>&copy; 2024 World of Games. All rights reserved.</p>
+</footer>
 </html>

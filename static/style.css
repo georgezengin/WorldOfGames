@@ -4,6 +4,12 @@ body {
     transition: background-color 0.3s, color 0.3s;
 }
 
+footer {
+    text-align: center;
+    padding: 10px;
+    margin-top: 20px;
+}
+
 #greeting {
     color: #ffffff; /* Adjust color as needed */
     position: fixed;
@@ -14,7 +20,7 @@ body {
 }
 
 .container {
-    width: 50%;
+    width: 70%;
     margin: 50px auto;
     padding: 30px;
     box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.7);

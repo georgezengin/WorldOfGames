@@ -1,0 +1,32 @@
+/* Center the table on the page */
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.scores-table {
+    border-collapse: collapse;
+    width: 80%; /* Adjust as needed */
+    border: 2px solid var(--table-border-color); /* Border color for the table */
+}
+
+.scores-table th, .scores-table td {
+    border: 1px solid var(--table-border-color); /* Border color for table cells */
+    padding: 8px;
+    text-align: center;
+}
+
+.scores-table tr:nth-child(even) {
+    background-color: var(--table-row-even-bg); /* Background color for even rows */
+}
+
+.scores-table tr:nth-child(odd) {
+    background-color: var(--table-row-odd-bg); /* Background color for odd rows */
+}
+
+.scores-table th {
+    background-color: var(--table-header-bg); /* Background color for table headers */
+    color: var(--table-header-text-color);
+}

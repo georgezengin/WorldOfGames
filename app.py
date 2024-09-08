@@ -1,6 +1,9 @@
-from flask import Flask, render_template, request, redirect, url_for, flash
+from flask import Flask, render_template, request, redirect, url_for, flash, session
 #from live import welcome, load_game
 from GuessGame import GuessGame
+from MemoryGame import MemoryGame
+from db_setup import update_session, update_score
+
 
 def welcome(name):
     return f"Hello {name}! Welcome to the World of Games!\n\n" #\
@@ -55,6 +58,11 @@ def create_app():
             flash('Name is required!', 'error')
             return redirect(url_for('index'))
 
+        session['name'] = name  # Store the user's name in the session
+        session['game_choice'] = None  # Initialize game choice in session
+        session['difficulty'] = None  # Initialize difficulty in session
+        session['guess'] = None  # Initialize guess in session
+
         message = welcome(name)
         return render_template('game.html', message=message, name=name)
 
@@ -74,45 +82,40 @@ def create_app():
         :param name: The player's name.
         :return: A redirect to the game page, or a redirect to the game selection page with an error message.
         """
-        game_choice = request.form.get('game_choice')
-        difficulty = request.form.get('difficulty')
-        name = request.form.get('name')
+        game_choice = request.form.get('game_choice') or session.get('game_choice')
+        difficulty = request.form.get('difficulty') or session.get('difficulty')
 
         if not game_choice:
             flash('Game choice is required!', 'error')
-            return render_template('game.html', message="Please choose a game.", name=name)
+            return render_template('game.html', message="Please choose a game.", name=session.get('name'))
         
         if not difficulty:
             flash('Difficulty level is required!', 'error')
-            return render_template('game.html', message="Please choose a difficulty level.", name=name)
+            return render_template('game.html', message="Please choose a difficulty level.", name=session.get('name'))
 
         try:
             difficulty = int(difficulty)
         except ValueError:
             flash('Invalid difficulty level!', 'error')
-            return render_template('game.html', message="Please choose a valid difficulty level.", name=name)
+            return render_template('game.html', message="Please choose a valid difficulty level.", name=session.get('name'))
 
-        if game_choice == '1':  # Assuming '4' refers to Memory Game
-            return render_template('memory_game.html', 
-                                   message="Memory Game is coming soon!",
-                                   name=name)
+        session['game_choice'] = game_choice
+        session['difficulty'] = difficulty
 
-        if game_choice == '2':  # Assuming '1' refers to GuessGame
+        if game_choice == '1':  # Memory Game
+            game = MemoryGame(difficulty)
+            sequence = game.generate_sequence()
+            return render_template('memory_game.html', message="Guess the sequence!", sequence=sequence, difficulty=difficulty, name=session.get('name'), result='')
+#            return render_template('memory_game.html', message="Memory Game is coming soon!", name=name)
+
+        if game_choice == '2':  # GuessGame
             game = GuessGame(difficulty)
             game.generate_number()  # Generate the secret number
-            return render_template('guess_game.html', 
-                                   message="Guess the number!", 
-                                   top_number=game.top_number,
-                                   secret_number=game.secret_number, 
-                                   difficulty=difficulty, 
-                                   name=name, 
-                                   result="")
+            return render_template('guess_game.html', message="Guess the number!", top_number=game.top_number, secret_number=game.secret_number, difficulty=difficulty, name=session.get('name'), result="")
 
         # Dummy function for other games
-        if game_choice == '3':  # Assuming '3' refers to Currency Roulette
-            return render_template('currency_roulette.html', 
-                                   message="Currency Roulette is coming soon!",
-                                   name=name)
+        if game_choice == '3':  # Currency Roulette
+            return render_template('currency_roulette.html', message="Currency Roulette is coming soon!", name=session.get('name'))
 
         flash('Invalid game choice!', 'error')
         return redirect(url_for('index'))
@@ -129,7 +132,8 @@ def create_app():
             guess = int(request.form.get('guess'))
             secret_number = int(request.form.get('secret_number'))
             difficulty = int(request.form.get('difficulty'))
-            name = request.form.get('name')
+
+            session['guess'] = guess  # Store the guess in the session
 
             # Generate a new GuessGame instance for a new number
             game = GuessGame(difficulty)
@@ -140,29 +144,64 @@ def create_app():
             if game.compare_results(guess):
                 result = f"You won! Your guessed {guess} and it was right!!! Congratulations!!!"
                 result_class = "success"  # Class for correct guess
+
+                update_session(session['name'], 2, difficulty, True, 1)
             else:
                 result = f"You lost! You guessed {guess} but the new number was {new_secret_number}"
                 result_class = "error"  # Class for incorrect guess
+                update_session(session['name'], 2, difficulty, False, 1)
 
-            return render_template('guess_game.html', 
-                                   message="Guess the number!", 
-                                   top_number=game.top_number,  # Update this value to reflect the current game state
-                                   secret_number=new_secret_number, 
-                                   difficulty=difficulty,
-                                   name=name,
-                                   result=result,
-                                   result_class=result_class)
+            return render_template('guess_game.html', message="Guess the number!", top_number=game.top_number, secret_number=new_secret_number, 
+                                   difficulty=difficulty, name=session.get('name'), result=result, result_class=result_class)
 
         except ValueError:
-            flash('Invalid input. Please enter a valid number.', 'error')
-            return render_template('guess_game.html', 
-                                   message="Guess the number!", 
-                                   top_number=request.form.get('top_number'),
-                                   secret_number=request.form.get('secret_number'), 
-                                   difficulty=request.form.get('difficulty'),
-                                   name=request.form.get('name'),
-                                   result="",
-                                   result_class="error")
+            result = 'Invalid input. Please enter a valid number.'
+            flash(result, 'error')
+            return render_template('guess_game.html', message="Guess the number!", top_number=request.form.get('top_number'), secret_number=request.form.get('secret_number'), 
+                                   difficulty=request.form.get('difficulty'), name=session.get('name'), result=result, result_class="error")
+
+
+    @app.route('/submit_memory_game', methods=['POST'])
+    def submit_memory_game() -> str:
+        """
+        Handle the sequence submission in the Memory Game.
+        :return: Rendered result.html template with the game outcome.
+        """
+        try:
+            difficulty = session.get('difficulty')  # Retrieve the difficulty from the session
+            name = session.get('name')  # Retrieve the user's name from the session
+            game = MemoryGame(difficulty)
+            game.generate_sequence()
+            sequence = game.sequence
+
+            sequenceform = request.form.get('sequence').split(',')
+            sequenceform = [int(num) for num in sequence]
+            user_input = request.form.get('user_sequence')
+            user_sequence = [int(num) for num in user_input.split()]
+
+            if game.is_list_equal(sequence, user_sequence):
+                result = f"You won! Your guessed the sequence {user_sequence} and it was right!!! Congratulations!!!"
+                result_class = "success"  # Class for correct guess
+                update_session(session['name'], 1, difficulty, True, 1)
+            else:
+                result = f"You lost! You guessed {user_sequence} but the sequence was {sequence}"
+                result_class = "error"  # Class for incorrect guess
+                update_session(session['name'], 1, difficulty, False, 1)
+
+            return render_template('memory_game.html', message="Guess the sequence!", sequence=sequence, 
+                                   difficulty=difficulty, name=name, result=result, result_class=result_class)
+        except ValueError:
+            result = 'Invalid input. Please enter a valid sequence of numbers separated by spaces.'
+            flash(result, 'error')
+            return render_template('memory_game.html', message="Guess the sequence!", sequence=request.form.get('sequence'), 
+                                   difficulty=session.get('difficulty'), name=session.get('name'), result=result, result_class="error")
+    
+    @app.route('/play_again', methods=['POST'])
+    def play_again():
+        """
+        Redirects the user to the game selection screen, passing their name through the URL.
+        """
+        return redirect(url_for('welcome_user'))
 
     @app.route('/exit_game', methods=['POST'])
     def exit_game():
@@ -170,6 +209,28 @@ def create_app():
         Exit the current game and return to the game selection screen.
         The current user's name is passed back to the game selection screen.
         """
-        return render_template('game.html',  message="Choose a game", name=request.form.get('name'))
+        return render_template('game.html',  message="Choose a game", name=session.get('name'), result="")
+
+
+    import sqlite3
+
+    @app.route('/top_scores', methods=['POST'])
+    def top_scores():
+        """Fetches the top 10 scores from the database and renders the top_scores.html template with the data."""
+
+        # Connect to the database
+        conn = sqlite3.connect('games.db')
+        cursor = conn.cursor()
+
+        # Fetch the top 10 scores
+        cursor.execute('SELECT name, score FROM top_10_scores ORDER BY score DESC LIMIT 10')
+        cursor.execute('SELECT name, score FROM top_10_scores ORDER BY score DESC LIMIT 10')
+        top_scores = cursor.fetchall()
+
+        # Close the database connection
+        conn.close()
+
+        # Render the top_scores.html template
+        return render_template('top_scores.html', top_scores=top_scores, name=session.get('name'), result="", message="")
 
     return app

@@ -166,3 +166,5 @@ cython_debug/
 *copy*.*
 *.zip
 tk-version/
+bup/
+games.db

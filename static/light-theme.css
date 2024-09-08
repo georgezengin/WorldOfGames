@@ -53,3 +53,36 @@ select {
     background-color: #ffffff; /* Dark background */
     border: 1px solid #5c5c5c;
 }
+
+/* Table styles */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+}
+
+table, th, td {
+    border: 1px solid #ddd;
+}
+
+th, td {
+    padding: 10px;
+    text-align: center;
+}
+
+tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+tbody tr:nth-child(odd) {
+    background-color: #fff;
+}
+
+:root {
+    --table-border-color: #ddd; /* Light gray border color */
+    --table-row-even-bg: #f9f9f9; /* Light gray background for even rows */
+    --table-row-odd-bg: #ffffff; /* White background for odd rows */
+    --table-header-bg: #007bff; /* Blue background for table headers */
+    --table-header-text-color: #ffffff; /* White text color for table headers */
+}
+

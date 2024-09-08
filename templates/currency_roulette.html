@@ -2,27 +2,67 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Currency Roulette</title>
+    <title>WOG - Currency Roulette</title>
     <script src="{{ url_for('static', filename='theme-control.js') }}" defer></script>
     <link id="theme-style" rel="stylesheet" href="{{ url_for('static', filename='light-theme.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
 </head>
 <body>
     <div id="user-name" data-name="{{ name }}" style="position: absolute; top: 10px; left: 10px;">Hello Guest!</div>
     <!-- Theme switcher buttons -->
     <div class="theme-switcher">
-        <button id="light-theme" aria-label="Switch to light theme">🌞 Light</button>
-        <button id="dark-theme" aria-label="Switch to dark theme">🌙 Dark</button>
+        <!-- <button id="light-theme" aria-label="Switch to light theme">🌞 Light</button>
+        <button id="dark-theme" aria-label="Switch to dark theme">🌙 Dark</button> -->
+        <button id="theme-toggle"
+            data-light-theme="{{ url_for('static', filename='light-theme.css') }}" 
+            data-dark-theme="{{ url_for('static', filename='dark-theme.css') }}">
+            <span id="theme-icon">🌙</span> <!-- Initial icon set to the moon -->
+        </button>
     </div>
     <div class="container">
+        <h1>{{ message }}</h1>
         <h1>Currency Roulette</h1>
-        <!-- Add your game content here -->
-        
-        <!-- Form to go back to the game selection -->
         <form action="{{ url_for('handle_game') }}" method="POST">
+            <input type="hidden" name="secret_number" value="{{ secret_number }}">
+            <input type="hidden" name="difficulty" value="{{ difficulty }}">
+            <input type="hidden" name="top_number" value="{{ top_number }}">
             <input type="hidden" name="name" value="{{ name }}">
-            <button type="submit">Choose another game</button>
+            <label for="guess">Guess a number from 1 to {{ top_number }}</label>
+            <input type="number" id="guess" name="guess" min="1" max="{{ top_number }}" required style="width: 10%;">
+
+            <!-- Display error here -->
+            {% if result %}
+                <div class="{{ result_class }}">{{ result }}</div>
+            {% endif %}
+
+            <div class="game-buttons">
+                <form action="{{ url_for('handle_game') }}" method="POST" style="display: inline;">
+                    <button type="submit">Choose another game</button>
+                </form>
+                <form action="{{ url_for('exit_game') }}" method="POST" style="display: inline;">
+                    <button type="submit">Exit Game</button>
+                </form>
+            </div>
+
+            <!-- Display error here -->
+            {% if result %}
+                <div class="{{ result_class }}">{{ result }}</div>
+            {% endif %}
+
+            <div class="game-buttons">
+                <form action="{{ url_for('handle_game') }}" method="POST" style="display: inline;">
+                    <button type="submit">...</nothing>></button>
+                </form>
+                <form action="{{ url_for('exit_game') }}" method="POST" style="display: inline;">
+                    <button type="submit">Exit Game</button>
+                </form>
+            </div>
         </form>
     </div>
 </body>
+<footer>
+    <!-- Add footer content if needed -->
+    <p>&copy; 2024 World of Games. All rights reserved.</p>
+</footer>
 </html>

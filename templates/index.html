@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>World of Games</title>
+    <title>WOG - World of Games</title>
     <script src="{{ url_for('static', filename='theme-control.js') }}" defer></script>
     <link id="theme-style" rel="stylesheet" href="{{ url_for('static', filename='light-theme.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
@@ -11,8 +11,13 @@
     <div id="user-name" data-name="{{ name }}" style="position: absolute; top: 10px; left: 10px;">Hello Guest!</div>
     <!-- Theme switcher buttons -->
     <div class="theme-switcher">
-        <button id="light-theme" aria-label="Switch to light theme">🌞 Light</button>
-        <button id="dark-theme" aria-label="Switch to dark theme">🌙 Dark</button>
+        <!-- <button id="light-theme" aria-label="Switch to light theme">🌞 Light</button>
+        <button id="dark-theme" aria-label="Switch to dark theme">🌙 Dark</button> -->
+        <button id="theme-toggle"
+            data-light-theme="{{ url_for('static', filename='light-theme.css') }}" 
+            data-dark-theme="{{ url_for('static', filename='dark-theme.css') }}">
+            <span id="theme-icon">🌙</span> <!-- Initial icon set to the moon -->
+        </button>
     </div>
     <div class="container">
         <h1>Welcome to the World of Games</h1>
@@ -32,4 +37,7 @@
         {% endwith %}
     </div>
 </body>
-</html>
+<footer>
+    <!-- Add footer content if needed -->
+    <p>&copy; 2024 World of Games. All rights reserved.</p>
+</footer></html>

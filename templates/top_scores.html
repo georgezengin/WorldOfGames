@@ -2,11 +2,11 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>WOG - Memory Game</title>
+    <title>WOG - Top 10 Scores</title>
     <script src="{{ url_for('static', filename='theme-control.js') }}" defer></script>
     <link id="theme-style" rel="stylesheet" href="{{ url_for('static', filename='light-theme.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <script src="{{ url_for('static', filename='memory-game.js') }}" defer></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='top_scores.css') }}">
 </head>
 <body>
     <div id="user-name" data-name="{{ name }}" style="position: absolute; top: 10px; left: 10px;">Hello Guest!</div>
@@ -21,36 +21,40 @@
         </button>
     </div>
     <div class="container">
-        <h1>Memory game: remember the sequence!</h1>
-        <div class="sequence">
-            <h2>{{ sequence | join(' ') }}</h2>
-        </div>
-        <form action="{{ url_for('submit_memory_game') }}" method="POST">
-            <input type="hidden" name="sequence" value="{{ sequence | join(',') }}">
-            <input type="hidden" name="difficulty" value="{{ difficulty }}">
-            <input type="hidden" name="name" value="{{ name }}">
-            <label for="user_sequence">Which were numbers you saw?</label>
-            <input type="text" id="user_sequence" name="user_sequence" required style="width: 30%;">
-            <!-- Display error here -->
-            {% if result %}
-                <div class="{{ result_class }}">{{ result }}</div>
-            {% endif %}
+        <h1>Top 10 Scores</h1>
+        <form action="{{ url_for('handle_game') }}" method="POST">
+            <main>
+                <table class="scores-table">
+                    <thead>
+                        <tr>
+                            <th>Rank</th>
+                            <th>Name</th>
+                            <th>Score</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for score in top_scores %}
+                        <tr>
+                            <td>{{ loop.index }}</td> <!-- Automatically increment rank -->
+                            <td>{{ score[0] }}</td>
+                            <td>{{ score[1] }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </main>
 
             <div class="game-buttons">
-                <form action="{{ url_for('handle_game') }}" method="POST" style="display: inline;">
-                    <button type="submit">Check your guess</button>
-                </form>
                 <form action="{{ url_for('exit_game') }}" method="POST" style="display: inline;">
-                    <button type="submit">Exit Game</button>
+                    <button type="submit">Back</button>
                 </form>
             </div>
         </form>
     </div>
-
-    <!-- <script src="{{ url_for('static', filename='guess_game.js') }}"></script> -->
 </body>
 <footer>
     <!-- Add footer content if needed -->
     <p>&copy; 2024 World of Games. All rights reserved.</p>
 </footer>
 </html>
+
