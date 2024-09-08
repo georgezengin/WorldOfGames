@@ -121,6 +121,10 @@ a:hover {
     color: #21a1f1;
 }
 
+.sequence_show {
+    font-size: 32px; /* Adjust the font size as needed */
+}
+
 /* Container for game buttons to align them horizontally */
 .game-buttons {
     display: flex;
@@ -161,3 +165,14 @@ select {
     margin-bottom: 20px;
 }
 
+.flashes {
+    list-style-type: none; /* Removes the bullet points */
+    padding: 0; /* Removes the padding */
+    margin: 0; /* Removes the margin */
+}
+
+.flashes li {
+    margin-bottom: 10px; /* Adds some space between messages */
+    padding: 10px; /* Adds padding around each message */
+    border: 1px solid #ddd; /* Optional: Adds a border around each message */
+}

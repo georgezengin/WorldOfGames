@@ -18,7 +18,9 @@ class MemoryGame:
 
         :return: A list of random numbers of length difficulty * 2.
         """
-        return [random.randint(1, 101) for _ in range(self.difficulty * 2)]
+        #sequence = sorted([random.randint(1, 101) for _ in range(self.difficulty * 2)])
+        sequence = sorted(random.sample(range(1, 102), self.difficulty * 2))
+        return sequence
 
     def get_list_from_user(self) -> List[int]:
         """

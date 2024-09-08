@@ -88,5 +88,24 @@ def update_score(name: str) -> None:
     conn.commit()
     conn.close()
 
+def get_user_score(name: str) -> int:
+    """
+    Updates the user's score in the top_10_scores table.
+
+    If the user is already in the table, updates their score.
+    If the user is not in the table, inserts their score.
+    Removes the user from the table if they are no longer in the top 10.
+    """
+    conn = sqlite3.connect('games.db')
+    cursor = conn.cursor()
+
+    # Calculate the total score for the user
+    cursor.execute('SELECT SUM(total_score) FROM sessions WHERE name = ?', (name,))
+    total_score = cursor.fetchone()[0] or 0
+
+    conn.commit()
+    conn.close()
+    return total_score
+
 if __name__ == '__main__':
     create_database()

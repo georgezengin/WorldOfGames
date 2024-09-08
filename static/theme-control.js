@@ -4,6 +4,11 @@ function updateUserName(name) {
     userNameElement.textContent = `Welcome ${name}!`;
 }
 
+function updateUserScore(score) {
+    console.log("Updating user score:", score);
+    userScoreElement.textContent = `Score ${score} points`;
+}
+
 // JavaScript to toggle the theme
 function toggleTheme() {
     const themeStyle = document.getElementById('theme-style');
@@ -59,8 +64,12 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 const userNameElement = document.getElementById('user-name'); // Element for displaying the user's name
-const userName = localStorage.getItem('username') || userNameElement.getAttribute('data-name') || 'Guest';
+const userName = localStorage.getItem('username') ||  userNameElement.getAttribute('data-name') ||'Guest';
 updateUserName(userName);
+
+const userScoreElement = document.getElementById('user-score'); // Element for displaying the user's score
+const userScore = localStorage.getItem('userscore') ||  userNameElement.getAttribute('data-score') || '0';
+updateUserScore(userScore);
 
 // Attach the function to the button's click event
 document.getElementById('theme-toggle').addEventListener('click', toggleTheme);

@@ -10,6 +10,7 @@
 </head>
 <body>
     <div id="user-name" data-name="{{ name }}" style="position: absolute; top: 10px; left: 10px;">Hello Guest!</div>
+    <div id="user-score" data-score="{{ score }}" style="position: absolute; top: 30px; left: 10px;">Score</div>
     <!-- Theme switcher buttons -->
     <div class="theme-switcher">
         <!-- <button id="light-theme" aria-label="Switch to light theme">🌞 Light</button>
@@ -22,19 +23,33 @@
     </div>
     <div class="container">
         <h1>Memory game: remember the sequence!</h1>
-        <div class="sequence">
-            <h2>{{ sequence | join(' ') }}</h2>
+
+        <div class="sequence_show" name="sequence_show" id="sequenceButton">
+            {{ sequence | join(' ') }}
         </div>
+        <br>
+        <!-- <button id="sequenceButton">Show Sequence</button> -->
         <form action="{{ url_for('submit_memory_game') }}" method="POST">
-            <input type="hidden" name="sequence" value="{{ sequence | join(',') }}">
-            <input type="hidden" name="difficulty" value="{{ difficulty }}">
-            <input type="hidden" name="name" value="{{ name }}">
-            <label for="user_sequence">Which were numbers you saw?</label>
-            <input type="text" id="user_sequence" name="user_sequence" required style="width: 30%;">
+            <!-- <input type="hidden" name="sequence" value="{{ sequence }}"> -->
+            <input type="hidden" id="sequence" name="sequence" value="{{ sequence | join(' ') }}">
+            <input type="hidden" id="difficulty" name="difficulty" value="{{ difficulty }}">
+            <input type="hidden" id="name" name="name" value="{{ name }}">
+            <label for="user-sequence">Which were the numbers you saw?</label>
+            <input type="text" id="user-sequence" name="user-sequence" required style="width: 30%;" disabled aria-disabled="true">
             <!-- Display error here -->
-            {% if result %}
+            <!-- {% if result %}
                 <div class="{{ result_class }}">{{ result }}</div>
-            {% endif %}
+            {% endif %} -->
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <ul class="flashes">
+                        {% for category, message in messages %}
+                            <li class="{{ category }}">{{ message }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            {% endwith %}
 
             <div class="game-buttons">
                 <form action="{{ url_for('handle_game') }}" method="POST" style="display: inline;">
