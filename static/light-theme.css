@@ -3,8 +3,9 @@ body {
     color: #333;
 }
 
-#greeting {
-    color: #ff6600; /* Adjust color as needed */
+.footer {
+    background-color: #dddddd;
+    color: #333;
 }
 
 .container {
@@ -13,20 +14,20 @@ body {
 }
 
 h2 {
-    color: #4f7cb6;
+    color: black;
 }
 
 h1 {
-    color: #000000;
+    color: black;
 }
 
 button {
-    background-color: #007bff;
-    color: #fff;
+    background-color: black;
+    color: lightgray;
 }
 
 button:hover {
-    background-color: #0056b3;
+    background-color: darkslategrey;
 }
 
 a {
@@ -78,11 +79,52 @@ tbody tr:nth-child(odd) {
     background-color: #fff;
 }
 
+/* Game name text color for light theme */
+.game-name {
+    color: #333; /* Dark text for light theme */
+}
+
+/* Light theme styles for form entry fields */
+input[type="text"],
+input[type="password"],
+input[type="email"],
+input[type="number"],
+textarea,
+select {
+    background-color: #fff; /* White background for light theme */
+    color: #000; /* Black text color for light theme */
+    border: 1px solid #ccc; /* Light gray border */
+    padding: 8px;
+    border-radius: 4px; /* Rounded corners */
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+input[type="text"]:focus,
+input[type="password"]:focus,
+input[type="number"]:focus,
+input[type="email"]:focus,
+textarea:focus,
+select:focus {
+    border-color: #715bf0; /* Blue border on focus */
+    box-shadow: 0 0 4px rgba(113, 91, 240, 0.5); /* Blue shadow on focus */
+    outline: none; /* Remove default focus outline */
+}
+
+/* Placeholder text color */
+::placeholder {
+    color: #888; /* Gray placeholder text for light theme */
+}
+
 :root {
     --table-border-color: #ddd; /* Light gray border color */
     --table-row-even-bg: #f9f9f9; /* Light gray background for even rows */
     --table-row-odd-bg: #ffffff; /* White background for odd rows */
     --table-header-bg: #007bff; /* Blue background for table headers */
     --table-header-text-color: #ffffff; /* White text color for table headers */
+
+    --difficulty-border-color: #715bf0; /* Example color for light theme */
+    --difficulty-hover-shadow: rgba(0, 0, 0, 0.2); /* Example shadow for light theme */
+    --difficulty-text-background: rgba(255, 255, 255, 0.7); /* Light background */
+    --difficulty-text-color: #000; /* Dark text color */
 }
 

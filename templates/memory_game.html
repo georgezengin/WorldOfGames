@@ -9,6 +9,7 @@
     <script src="{{ url_for('static', filename='memory-game.js') }}" defer></script>
 </head>
 <body>
+    <img src="{{ url_for('static', filename='wog-logo.png') }}" alt="WOG Logo" class="logo">
     <div id="user-name" data-name="{{ name }}" style="position: absolute; top: 10px; left: 10px;">Hello Guest!</div>
     <div id="user-score" data-score="{{ score }}" style="position: absolute; top: 30px; left: 10px;">Score</div>
     <!-- Theme switcher buttons -->
@@ -34,7 +35,7 @@
             <input type="hidden" id="sequence" name="sequence" value="{{ sequence | join(' ') }}">
             <input type="hidden" id="difficulty" name="difficulty" value="{{ difficulty }}">
             <input type="hidden" id="name" name="name" value="{{ name }}">
-            <label for="user-sequence">Which were the numbers you saw?</label>
+            <label for="user-sequence">Which were the numbers you saw? [Level: {{ difficulty }}]</label>
             <input type="text" id="user-sequence" name="user-sequence" required style="width: 30%;" disabled aria-disabled="true">
             <!-- Display error here -->
             <!-- {% if result %}
@@ -51,7 +52,7 @@
                 {% endif %}
             {% endwith %}
 
-            <div class="game-buttons">
+            <div class="button-row">
                 <form action="{{ url_for('handle_game') }}" method="POST" style="display: inline;">
                     <button type="submit">Check your guess</button>
                 </form>
@@ -64,7 +65,7 @@
 
     <!-- <script src="{{ url_for('static', filename='guess_game.js') }}"></script> -->
 </body>
-<footer>
+<footer class="footer">
     <!-- Add footer content if needed -->
     <p>&copy; 2024 World of Games. All rights reserved.</p>
 </footer>

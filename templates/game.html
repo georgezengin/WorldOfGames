@@ -2,13 +2,19 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>WOG - Select a Game</title>
-    <script src="{{ url_for('static', filename='theme-control.js') }}" defer></script>
-    <link id="theme-style" rel="stylesheet" href="{{ url_for('static', filename='light-theme.css') }}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>WOG - World of Games</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins&display=swap">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-
+    <link rel="stylesheet" href="{{ url_for('static', filename='light-theme.css') }}" id="theme-style">
+    <script src="{{ url_for('static', filename='theme-control.js') }}" defer></script>
+    <script src="{{ url_for('static', filename='game-control.js') }}" defer></script>
 </head>
 <body>
+    <img src="{{ url_for('static', filename='wog-logo.png') }}" alt="WOG Logo" class="logo">
     <div id="user-name" data-name="{{ name }}" style="position: absolute; top: 10px; left: 10px;">Hello Guest!</div>
     <div id="user-score" data-score="{{ score }}" style="position: absolute; top: 30px; left: 10px;">Score</div>
     <!-- Theme switcher buttons -->
@@ -25,14 +31,66 @@
         <h1>{{ message }}</h1>
         <form action="{{ url_for('handle_game') }}" method="POST">
             <input type="hidden" name="name" value="{{ name }}">
-            <h2>Choose a game!</h2>
+
             <div class="game-options">
+                <div class="game-option" id="game1" data-game="1">
+                    <input type="radio" name="game_choice" value="1" id="game1-choice">
+                    <label for="game1-choice" class="game-image-wrapper">
+                        <img src="{{ url_for('static', filename='memory-game.jpg') }}" alt="Memory Game" class="game-image">
+                    </label>
+                    <div class="game-name">Memory Game</div>
+                </div>
+                <div class="game-option" id="game2" data-game="2">
+                    <input type="radio" name="game_choice" value="2" id="game2-choice">
+                    <label for="game2-choice" class="game-image-wrapper">
+                        <img src="{{ url_for('static', filename='guess-game.jpg') }}" alt="Guess Game" class="game-image">
+                    </label>
+                    <div class="game-name">Guess Game</div>
+                </div>
+                <div class="game-option" id="game3" data-game="3">
+                    <input type="radio" name="game_choice" value="3" id="game3-choice">
+                    <label for="game3-choice" class="game-image-wrapper">
+                        <img src="{{ url_for('static', filename='currency-roulette.jpg') }}" alt="Currency Roulette" class="game-image">
+                    </label>
+                    <div class="game-name">Currency Roulette</div>
+                </div>
+            </div>
+            
+            <!-- Hidden input to store the selected game -->
+            <input type="hidden" name="game_choice" id="game_choice" value="">
+
+            <!-- <div class="game-options">
                 <label><input type="radio" name="game_choice" value="1"> Memory Game</label>
                 <label><input type="radio" name="game_choice" value="2"> Guess Game</label>
                 <label><input type="radio" name="game_choice" value="3"> Currency Roulette</label>
-            </div>
+            </div-->
             <h2>Game level?</h2>
             <div class="difficulty-options">
+                <div class="difficulty-option" data-difficulty="1">
+                    <img src="{{ url_for('static', filename='difficulty-one.png') }}" alt="Difficulty 1">
+                    <span class="difficulty-text">Easy (chicken!)</span>
+                </div>
+                <div class="difficulty-option" data-difficulty="2">
+                    <img src="{{ url_for('static', filename='difficulty-two.png') }}" alt="Difficulty 2">
+                    <span class="difficulty-text">Medium (let's see you!)</span>
+                </div>
+                <div class="difficulty-option" data-difficulty="3">
+                    <img src="{{ url_for('static', filename='difficulty-three.png') }}" alt="Difficulty 3">
+                    <span class="difficulty-text">Hard (show off!)</span>
+                </div>
+                <div class="difficulty-option" data-difficulty="4">
+                    <img src="{{ url_for('static', filename='difficulty-four.png') }}" alt="Difficulty 4">
+                    <span class="difficulty-text">Very Hard! (you're on fire!)</span>
+                </div>
+                <div class="difficulty-option" data-difficulty="5">
+                    <img src="{{ url_for('static', filename='difficulty-five.png') }}" alt="Difficulty 5">
+                    <span class="difficulty-text">Insanely Hard!!! (Einstein level!!!)</span>
+                </div>
+            </div>
+
+            <input type="hidden" name="difficulty" id="difficulty" value="">
+
+            <!-- <div class="difficulty-options">
                 <select name="difficulty" required>
                     <option value="" disabled selected>Select difficulty</option>
                     <option value="1">1 - Easy (chicken!)</option>
@@ -41,8 +99,8 @@
                     <option value="4">4 - Very Hard! (you're on fire!)</option>
                     <option value="5">5 - Insanely Hard!!! (Einstein level only!!!)</option>
                 </select>
-            </div>
-
+            </div> -->
+            
             {% with messages = get_flashed_messages(with_categories=true) %}
                 {% if messages %}
                     <ul class="flashes">
@@ -54,21 +112,23 @@
             {% endwith %}
 
             <div class="game-buttons">
-                <form action="{{ url_for('submit_guess') }}" method="POST" style="display: inline;">
-                    <button type="submit">Play!</button>
+                <form action="{{ url_for('submit_guess') }}" method="POST" id="play-form" style="display: inline;">
+                    <button type="submit" id="play-button" class="play-button" disabled>Play!</button>
                 </form>
-                <form action="{{ url_for('index') }}" method="POST" style="display: inline;">
-                    <button type="submit">Exit World of Games</button>
-                </form>
-                <form action="{{ url_for('top_scores') }}" method="POST" style="display: inline;">
-                    <button type="submit">Top Scores</button>
-                </form>
+                <div class="button-row">
+                    <form action="{{ url_for('index') }}" method="POST" style="display: inline;">
+                        <button type="submit">Exit World of Games</button>
+                    </form>
+                    <form action="{{ url_for('top_scores') }}" method="POST" style="display: inline;">
+                        <button type="submit">Top Scores</button>
+                    </form>
+                </div>
             </div>
         </form>
     </div>
 </body>
-<footer>
+<footer class="footer">
     <!-- Add footer content if needed -->
-    <p>&copy; 2024 World of Games. All rights reserved.</p>
+    <p>&copy; 2024 World of Games by George Z. All rights reserved.</p>
 </footer>
 </html>

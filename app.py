@@ -2,7 +2,8 @@ from flask import Flask, render_template, request, redirect, url_for, flash, ses
 #from live import welcome, load_game
 from GuessGame import GuessGame
 from MemoryGame import MemoryGame
-from db_setup import update_session, update_score, get_user_score
+from db_setup import update_session, update_score, get_user_score, create_database
+import os
 
 def welcome(name):
     return f"Hello {name}! Welcome to the World of Games!\n\n" #\
@@ -29,7 +30,7 @@ def create_app():
     :return: A Flask application instance.
     """
     app = Flask(__name__)
-    app.secret_key = 'your_secret_key'
+    app.secret_key = os.getenv('SECRET_KEY', 'default_key')
     
     @app.route('/', methods=['GET', 'POST'])
     def index():
@@ -113,14 +114,19 @@ def create_app():
             game = MemoryGame(difficulty)
             sequence = game.generate_sequence()
             session['target'] = sequence # save solution to game
-            return render_template('memory_game.html', message="Guess the sequence!", sequence=sequence, difficulty=difficulty, name=session.get('name'), score=session.get('score'))#, result='')
+            session['message'] = f"Memory Game, guess the sequence! [{session['target']}]"
+            return render_template('memory_game.html', message=session.get('message') , sequence=session.get('target'), 
+                                    difficulty=session.get('difficulty'), name=session.get('name'), score=session.get('score'))
 #            return render_template('memory_game.html', message="Memory Game is coming soon!", name=name)
 
         if game_choice == '2':  # GuessGame
             game = GuessGame(difficulty)
             game.generate_number()  # Generate the secret number
             session['target'] = game.secret_number
-            return render_template('guess_game.html', message="Guess the number!", top_number=game.top_number, secret_number=game.secret_number, difficulty=difficulty, name=session.get('name'), score=session.get('score'))#, result="")
+            session['top_number'] = game.top_number
+            session['message'] = "Guess the secret number!"
+            return render_template('guess_game.html', message=session.get('message'), top_number=session.get('top_number'), secret_number=session.get('target'), 
+                                    difficulty=difficulty, name=session.get('name'), score=session.get('score'))#, result="")
 
         # Dummy function for other games
         if game_choice == '3':  # Currency Roulette
@@ -136,7 +142,7 @@ def create_app():
         :return: Rendered result.html template with the game outcome.
         """
         try:
-            difficulty = session.get('difficulty')  # Retrieve the difficulty from the session
+            difficulty = session['difficulty']  # Retrieve the difficulty from the session
             sequenceform = session['target'] #request.form.get('sequence').split(' ')
             sequenceform = [int(num) for num in sequenceform]
 
@@ -145,13 +151,13 @@ def create_app():
             user_sequence = [int(num) for num in user_input.split()] if user_input else []
 
             if sorted(sequenceform) == sorted(user_sequence):
-                result = f"You won! Your guessed the sequence {user_sequence} and it was right!!! Congratulations!!!"
-                result_class = "success"  # Class for correct guess
+                result = f"You won! Your guessed the sequence {user_sequence} and it was right!!!"
+                # result_class = "success"  # Class for correct guess
                 flash(result, 'success')
                 update_session(session['name'], 1, difficulty, True, 1)
             else:
-                result = f"You lost! You guessed {user_sequence} but the sequence was {sequenceform}"
-                result_class = "error"  # Class for incorrect guess
+                result = f"You lost! You guessed {user_sequence}but the sequence was {sequenceform}"
+                # result_class = "error"  # Class for incorrect guess
                 flash(result, 'error')
                 update_session(session['name'], 1, difficulty, False, 1)
             session['score'] = get_user_score(session['name'])
@@ -160,14 +166,15 @@ def create_app():
             game.generate_sequence()
             sequence = game.sequence
             session['target'] = sequence
+            session['message'] = f"Memory Game, guess the sequence! [{session['target']}]"
 
-            return render_template('memory_game.html', message=f"Guess the sequence! [{session['target']}]", sequence=sequence, 
-                                   difficulty=difficulty, name=session.get('name'), score=session.get('score')) #, result=result, result_class=result_class)
+            return render_template('memory_game.html', message=session.get('message') , sequence=session.get('target'), 
+                                   difficulty=session.get('difficulty'), name=session.get('name'), score=session.get('score'))
         except ValueError:
             result = 'Invalid input. Please enter a valid sequence of numbers separated by spaces.'
             flash(result, 'error')
-            return render_template('memory_game.html', message="Guess the sequence!["+' '.join([str(i) for i in session['target']])+']', sequence=sequenceform, 
-                                   difficulty=session.get('difficulty'), name=session.get('name'), score=session.get('score')) #, result=result, result_class="error")
+            return render_template('memory_game.html', message=session.get('message') , sequence=session.get("target"), 
+                                   difficulty=session.get('difficulty'), name=session.get('name'), score=session.get('score'))
 
     @app.route('/submit_guess', methods=['POST'])
     def submit_guess():
@@ -178,18 +185,19 @@ def create_app():
         presented with an error message and the same secret number.
         """
         try:
-            guess = int(request.form.get('guess'))
+            difficulty = session['difficulty']  # Retrieve the difficulty from the session
             secret_number = session['target']
+            guess = int(request.form.get('guess'))
             session['guess'] = guess  # Store the guess in the session
 
             if guess == secret_number: #or game.compare_results(guess):
                 result = f"You won! Your guessed {guess} and it was right!!! Congratulations!!!"
-                result_class = "success"  # Class for correct guess
+                # result_class = "success"  # Class for correct guess
                 flash(result, 'success')
                 update_session(session['name'], 2, difficulty, True, 1)
             else:
-                result = f"You lost! You guessed {guess} but the new number was {new_secret_number}"
-                result_class = "error"  # Class for incorrect guess
+                result = f"You lost! You guessed {guess} but the secret number was {secret_number}"
+                # result_class = "error"  # Class for incorrect guess
                 flash(result, 'error')
                 update_session(session['name'], 2, difficulty, False, 1)
             session['score'] = get_user_score(session['name'])
@@ -198,15 +206,15 @@ def create_app():
             game = GuessGame(difficulty)
             game.generate_number()  # Generate the secret number
             session['target'] = game.secret_number
-
-            return render_template('guess_game.html', message="Guess the number!", top_number=game.top_number, secret_number=new_secret_number, 
-                                   difficulty=difficulty, name=session.get('name'), score=session.get('score')) #, result=result, result_class=result_class)
+            session['message'] = "Guess the secret number!"
+            return render_template('guess_game.html', message=session.get('message'), top_number=game.top_number, secret_number=session.get('target'), 
+                                   difficulty=session.get('difficulty'), name=session.get('name'), score=session.get('score'))
 
         except ValueError:
             result = 'Invalid input. Please enter a valid number.'
             flash(result, 'error')
-            return render_template('guess_game.html', message="Guess the number!", top_number=request.form.get('top_number'), secret_number=request.form.get('secret_number'), 
-                                   difficulty=request.form.get('difficulty'), name=session.get('name'), score=session.get('score'))#, result=result, result_class="error")
+            return render_template('guess_game.html', message="Guess the number!", top_number=request.form.get('top_number'), secret_number=session.get('target'), 
+                                   difficulty=session.get('difficulty'), name=session.get('name'), score=session.get('score'))
 
 
     @app.route('/play_again', methods=['POST'])
@@ -222,7 +230,7 @@ def create_app():
         Exit the current game and return to the game selection screen.
         The current user's name is passed back to the game selection screen.
         """
-        return render_template('game.html',  message="Choose a game", name=session.get('name'), score=session.get('score'))#, result="")
+        return render_template('game.html',  message="", name=session.get('name'), score=session.get('score'))#, result="")
 
 
     import sqlite3
@@ -232,18 +240,20 @@ def create_app():
         """Fetches the top 10 scores from the database and renders the top_scores.html template with the data."""
 
         # Connect to the database
-        conn = sqlite3.connect('games.db')
-        cursor = conn.cursor()
+        with sqlite3.connect('games.db') as conn:
+            cursor = conn.cursor()
 
-        # Fetch the top 10 scores
-        cursor.execute('SELECT name, score FROM top_10_scores ORDER BY score DESC LIMIT 10')
-        cursor.execute('SELECT name, score FROM top_10_scores ORDER BY score DESC LIMIT 10')
-        top_scores = cursor.fetchall()
-
-        # Close the database connection
-        conn.close()
+            # Fetch the top 10 scores
+            cursor.execute('SELECT name, score FROM top_10_scores ORDER BY score DESC LIMIT 10')
+            top_scores = cursor.fetchall()
 
         # Render the top_scores.html template
-        return render_template('top_scores.html', top_scores=top_scores, name=session.get('name'), message="") #, result=""
+        return render_template('top_scores.html', top_scores=top_scores, name=session.get('name'), message="")
 
     return app
+
+
+if __name__ == '__main__':
+    app = create_app()
+    app.run(debug=True)
+    create_database()

@@ -1,22 +1,27 @@
 body {
     font-family: 'Verdana', sans-serif;
     text-align: center;
-    transition: background-color 0.3s, color 0.3s;
+    /* transition: background-color 0.3s, color 0.3s; */
+    margin: 0; /* Remove default margin */
+    padding: 0; /* Remove default padding */
+    position: relative; /* Ensure the body has a positioning context */
+    overflow: hidden; /* Hide any overflow to keep the background image contained */
 }
 
-footer {
+.logo {
+    display: block;
+    max-height: 40px;
+    margin: 10px auto; /* Center the logo horizontally */
+}
+
+.footer {
+    /* background-color: #333; */
+    /* color: white; */
     text-align: center;
     padding: 10px;
-    margin-top: 20px;
-}
-
-#greeting {
-    color: #ffffff; /* Adjust color as needed */
     position: fixed;
-    top: 10px;
-    left: 10px;
-    font-size: 30px;
-    font-weight: bold;
+    bottom: 0;
+    width: 100%;
 }
 
 .container {
@@ -25,14 +30,16 @@ footer {
     padding: 30px;
     box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.7);
     border-radius: 10px;
-}
-
-h2 {
-    margin-bottom: 10px;
+    position: relative;
+    z-index: 1; /* Ensure that container content appears on top of the background */
 }
 
 h1 {
     margin-bottom: 20px;
+}
+
+h2 {
+    margin-bottom: 10px;
 }
 
 label {
@@ -41,21 +48,6 @@ label {
     display: block;
 }
 
-.game-options {
-    display: flex;
-    justify-content: center; /* Center-aligns the radio buttons */
-    gap: 20px; /* Space between radio buttons */
-}
-
-.game-options label {
-    display: flex;
-    align-items: center; /* Aligns text vertically with the radio button */
-    margin: 0; /* Remove default margin */
-}
-
-.game-options input[type="radio"] {
-    margin-right: 5px; /* Space between radio button and label text */
-}
 /* Style for the theme switcher buttons */
 .theme-switcher {
     position: fixed;
@@ -78,23 +70,6 @@ label {
 
 .theme-switcher button:hover {
     background-color: #21a1f1;
-}
-
-/* Style the difficulty radio buttons to be horizontal */
-.difficulty-options {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center; /* Center-aligns the radio buttons */
-}
-
-.difficulty-options label {
-    margin: 0 10px; /* Space between radio buttons */
-    display: flex;
-    align-items: center; /* Aligns text vertically with the radio button */
-}
-
-.difficulty-options input[type="radio"] {
-    margin-right: 5px; /* Space between radio button and label text */
 }
 
 /* Align buttons on the same line with separation */
@@ -126,15 +101,53 @@ a:hover {
 }
 
 /* Container for game buttons to align them horizontally */
+
 .game-buttons {
     display: flex;
+    flex-direction: column;
+    align-items: center;
     justify-content: center; /* Center-aligns the buttons within the container */
     margin-top: 20px; /* Space above the button container */
     margin-bottom: 20px;
+    gap: 10px;             /* Optional: Add some spacing between buttons */
 }
 
 .game-buttons button {
     margin: 0 10px; /* Space between buttons */
+}
+
+.game-buttons form {
+    margin: 0;             /* Ensure no extra margins are added around forms */
+}
+
+.play-button {
+    width: 30%; /* Set the button width to 20% of its container */
+    padding: 10px; /* Optional: Add padding to increase the button size */
+    font-size: 16px; /* Optional: Adjust font size for better visibility */
+    margin: 0 auto; /* Center the button horizontally in its container */
+    display: block; /* Ensure the button behaves as a block element for centering */
+}
+
+.button-row {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+button {
+    padding: 10px 20px;
+    margin: 5px;
+    font-size: 16px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    cursor: pointer;
+}
+
+button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
 }
 
 /* Add styles for the select dropdown */
@@ -166,13 +179,211 @@ select {
 }
 
 .flashes {
+    width: 60%;
+    margin: 0 auto; /* Center the list horizontally */
+    text-align: center;
     list-style-type: none; /* Removes the bullet points */
     padding: 0; /* Removes the padding */
-    margin: 0; /* Removes the margin */
 }
 
 .flashes li {
     margin-bottom: 10px; /* Adds some space between messages */
     padding: 10px; /* Adds padding around each message */
     border: 1px solid #ddd; /* Optional: Adds a border around each message */
+}
+
+.game-options {
+    display: flex;
+    justify-content: center; /* Align buttons in the center horizontally */
+    align-items: center;
+    flex-wrap: wrap; /* Ensure buttons wrap if the screen is too narrow */
+    gap: 20px; /* Add space between the buttons */
+}
+
+.game-option {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 20px;
+    position: relative; /* Make sure the border box appears correctly */
+}
+
+/* Box around the image when selected */
+.game-option input[type="radio"] {
+    display: none; /* Hide the radio input */
+}
+
+.game-option input[type="radio"]:checked + .game-image-wrapper {
+    border: 3px solid #007bff; /* Blue border for selected image */
+    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.3); /* Larger shadow for selected image */
+}
+
+.game-image-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.game-image {
+    width: 150px; /* Adjust size as needed */
+    border-radius: 10px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    transition: transform 0.5s, box-shadow 0.3s;
+}
+
+.game-image:hover {
+    transform: scale(1.1) rotate(10deg); /*rotateY(180deg); /* Rotate horizontally and zoom */
+    box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.3); /* Increase shadow on hover */
+}
+
+/* Styling for the game name text */
+.game-name {
+    font-size: 18px;
+    margin-top: 10px;
+    text-align: center;
+    transition: color 0.3s ease, font-size 0.3s;
+    /* display: none; */
+}
+
+/* Light theme text color */
+#theme-style[href*="light-theme.css"] ~ .game-option .game-name {
+    color: #333; /* Dark text for light theme */
+}
+
+/* Dark theme text color */
+#theme-style[href*="dark-theme.css"] ~ .game-option .game-name {
+    color: #f0f0f0; /* Light text for dark theme */
+}
+
+/* Optional: Slightly increase the text size on hover */
+.game-option:hover .game-name {
+    font-size: 20px; /* Slightly larger font size on hover */
+}
+
+:root {
+    --difficulty-border-color: #715bf0; /* Default border color for selected difficulty */
+    --difficulty-hover-shadow: rgba(0, 0, 0, 0.3); /* Default shadow color on hover */
+    --difficulty-text-background: rgba(0, 0, 0, 0.7); /* Default text background color */
+    --difficulty-text-color: #fff; /* Default text color */
+}
+
+.difficulty-options {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.difficulty-option {
+    position: relative;
+    margin: 10px;
+    cursor: pointer;
+}
+
+.difficulty-option img {
+    width: 100px; /* Adjust size as needed */
+    border-radius: 10px;
+    box-shadow: 0px 4px 8px var(--difficulty-hover-shadow);
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.difficulty-option:hover img {
+    transform: rotateY(180deg);
+    box-shadow: 0px 6px 12px var(--difficulty-hover-shadow);
+}
+
+.difficulty-option.selected img {
+    border: 3px solid var(--difficulty-border-color); /* Border color for selected image */
+}
+
+.difficulty-text {
+    position: absolute;
+    bottom: -20px; /* Adjust as needed */
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--difficulty-text-background);
+    color: var(--difficulty-text-color);
+    padding: 5px;
+    border-radius: 5px;
+    white-space: nowrap;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.difficulty-option:hover .difficulty-text {
+    opacity: 1;
+}
+
+/* Light theme overrides */
+#theme-style[href*="light-theme.css"] ~ .difficulty-option .difficulty-text {
+    background: rgba(255, 255, 255, 0.7); /* Light text background color */
+    color: #000; /* Dark text color for light theme */
+}
+
+/* Dark theme overrides */
+#theme-style[href*="dark-theme.css"] ~ .difficulty-option .difficulty-text {
+    background: rgba(0, 0, 0, 0.7); /* Dark text background color */
+    color: #fff; /* Light text color for dark theme */
+}
+
+
+.card {
+    position: relative;
+    left: 0;
+    /* width: 9rem; */
+    /* height: 10rem; */
+    width: auto;
+    height: auto;
+    background-color: var(--background);
+    border-radius: 0.5rem;
+    transition: 1000ms all;
+    transform-origin: center left;
+    box-shadow: 0 5px 12px rgba(0, 0, 0, 0.5);
+    outline: 1px solid var(--background);
+    overflow: hidden;
+}
+
+.card img {
+    height: auto; /* 10rem;*/
+    object-fit: cover;
+    border-radius: 0.25rem;
+}
+
+.card:hover {
+    cursor: pointer;
+    transform: scale(1.15);
+}
+
+@keyframes cardFade {
+    from {
+        opacity: 0;
+    } to {
+        opacity: 1;
+    }
+}
+
+.card:hover figcaption {
+    animation: cardFade 0.3s ease-in-out;
+    font-size: 0.6rem;
+    position: absolute;
+    height: 5rem;
+    width: 10rem;
+    display: flex;
+    align-items: end;
+    background: linear-gradient(
+        to top, 
+        rgba(0, 0, 0, 0.9) 0%,
+        rgba(0, 0, 0, 0) 100%
+    );
+    color: white;
+    left: 0;
+    bottom: 0;
+    padding-left: 0.75rem;
+    padding-bottom: 0.65rem;
+}
+
+.card:hover ~ .card {
+    font-weight: bold;
+    cursor: pointer;
+    transform: translateX(1.3rem);
 }

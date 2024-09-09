@@ -3,11 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <title>WOG - World of Games</title>
-    <script src="{{ url_for('static', filename='theme-control.js') }}" defer></script>
-    <link id="theme-style" rel="stylesheet" href="{{ url_for('static', filename='light-theme.css') }}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins&display=swap">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='light-theme.css') }}" id="theme-style">
+    <script src="{{ url_for('static', filename='theme-control.js') }}" defer></script>
 </head>
 <body>
+    <img src="{{ url_for('static', filename='wog-logo.png') }}" alt="WOG Logo" class="logo">
     <div id="user-name" data-name="{{ name }}" style="position: absolute; top: 10px; left: 10px;">Hello Guest!</div>
     <div id="user-score" data-score="{{ score }}" style="position: absolute; top: 30px; left: 10px;">Score</div>
     <!-- Theme switcher buttons -->
@@ -38,7 +44,7 @@
         {% endwith %}
     </div>
 </body>
-<footer>
+<footer class="footer">
     <!-- Add footer content if needed -->
     <p>&copy; 2024 World of Games. All rights reserved.</p>
 </footer></html>

@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='top_scores.css') }}">
 </head>
 <body>
+    <img src="{{ url_for('static', filename='wog-logo.png') }}" alt="WOG Logo" class="logo">
     <div id="user-name" data-name="{{ name }}" style="position: absolute; top: 10px; left: 10px;">Hello Guest!</div>
     <div id="user-score" data-score="{{ score }}" style="position: absolute; top: 30px; left: 10px;">Score</div>
     <!-- Theme switcher buttons -->
@@ -45,7 +46,7 @@
                 </table>
             </main>
 
-            <div class="game-buttons">
+            <div class="button-row">
                 <form action="{{ url_for('exit_game') }}" method="POST" style="display: inline;">
                     <button type="submit">Back</button>
                 </form>
@@ -53,7 +54,7 @@
         </form>
     </div>
 </body>
-<footer>
+<footer class="footer">
     <!-- Add footer content if needed -->
     <p>&copy; 2024 World of Games. All rights reserved.</p>
 </footer>

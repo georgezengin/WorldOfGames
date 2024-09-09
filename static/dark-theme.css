@@ -3,8 +3,9 @@ body {
     color: #61dafb;
 }
 
-#greeting {
-    color: #ffffff; /* Adjust color as needed */
+.footer {
+    background-color: #3f4653;
+    color: #61dafb;
 }
 
 .container {
@@ -19,7 +20,6 @@ h2 {
 h1 {
     color: #2d6ab9;
 }
-
 
 button {
     background-color: #61dafb;
@@ -79,12 +79,51 @@ tbody tr:nth-child(odd) {
     background-color: #444;
 }
 
+/* Game name text color for dark theme */
+.game-name {
+    color: #f0f0f0; /* Light text for dark theme */
+}
+
+/* Dark theme styles for form entry fields */
+input[type="text"],
+input[type="password"],
+input[type="email"],
+input[type="number"],
+textarea,
+select {
+    background-color: #333; /* Dark background for dark theme */
+    color: #fff; /* White text color for dark theme */
+    border: 1px solid #555; /* Darker gray border */
+    padding: 8px;
+    border-radius: 4px; /* Rounded corners */
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+input[type="text"]:focus,
+input[type="password"]:focus,
+input[type="email"]:focus,
+input[type="number"]:focus,
+textarea:focus,
+select:focus {
+    border-color: #715bf0; /* Blue border on focus */
+    box-shadow: 0 0 4px rgba(113, 91, 240, 0.5); /* Blue shadow on focus */
+    outline: none; /* Remove default focus outline */
+}
+
+/* Placeholder text color */
+::placeholder {
+    color: #aaa; /* Light gray placeholder text for dark theme */
+}
+
 :root {
     --table-border-color: #555; /* Dark border color */
     --table-row-even-bg: #444; /* Darker background for even rows */
     --table-row-odd-bg: #333; /* Darker background for odd rows */
     --table-header-bg: #333; /* Darker background for table headers */
     --table-header-text-color: #ffffff; /* White text color for table headers */
-}
 
-/* Existing styles... */
+    --difficulty-border-color: #715bf0; /* Example color for dark theme */
+    --difficulty-hover-shadow: rgba(0, 0, 0, 0.4); /* Example shadow for dark theme */
+    --difficulty-text-background: rgba(0, 0, 0, 0.7); /* Dark background */
+    --difficulty-text-color: #fff; /* Light text color */
+}
